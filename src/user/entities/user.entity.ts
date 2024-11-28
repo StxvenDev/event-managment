@@ -1,20 +1,28 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Comment } from "src/comment/entities/comment.entity";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({ name : 'users'  })
 export class User {
   @PrimaryGeneratedColumn()
-  id : number
+  id : number;
 
   @Column('varchar')
-  name : string
+  name : string;
 
   @Column('varchar', {
     unique : true
   })
-  email : string
+  email : string;
+
+  @OneToMany(
+    () => Comment,
+    (comment) => comment.user,
+    {cascade : true, eager : true}
+  )
+  comments : Comment[];
 
   @Column('datetime',{
     default : () => 'CURRENT_TIMESTAMP'
   })
-  create_at : Date
+  create_at : Date;
 }

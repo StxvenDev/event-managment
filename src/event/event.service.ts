@@ -35,7 +35,6 @@ export class EventService {
   }
 
   async findOne(id: number) {
-    // const event : Event = await this.EventRepository.findOneBy({id});
     const queryBuilder = this.EventRepository.createQueryBuilder('event');
     const event = await queryBuilder.where('event.id =:eventId',{
       eventId : id
@@ -48,7 +47,6 @@ export class EventService {
   }
 
   async update(id: number, updateEventDto: UpdateEventDto) {
-      await this.findOne(id);
       const {organizer_id} = updateEventDto;
       const userOrganizer = await this.userService.findOne(organizer_id);
       const dataEvent = {
@@ -56,6 +54,8 @@ export class EventService {
         organizer_id : userOrganizer
       }
       const eventUpdated = await this.EventRepository.preload({id, ...dataEvent});
+      if(!eventUpdated) throw new NotFoundException(`Event with id ${id} not found`)
+      await this.EventRepository.save(eventUpdated);
       return eventUpdated;
   }
 
