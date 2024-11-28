@@ -7,6 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CommonModule } from './common/common.module';
 import { EventModule } from './event/event.module';
 import { CommentModule } from './comment/comment.module';
+import { CategoryModule } from './category/category.module';
 
 @Module({
   imports: [
@@ -24,7 +25,8 @@ import { CommentModule } from './comment/comment.module';
     UserModule,
     CommonModule,
     EventModule,
-    CommentModule
+    CommentModule,
+    CategoryModule
   ],
   controllers: [AppController],
   providers: [AppService],
