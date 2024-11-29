@@ -11,7 +11,8 @@ import { Category } from './entities/category.entity';
     TypeOrmModule.forFeature([Category])
   ],
   exports: [
-    TypeOrmModule
+    TypeOrmModule,
+    CategoryService
   ]
 })
 export class CategoryModule {}

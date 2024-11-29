@@ -1,4 +1,6 @@
 import { Comment } from "src/comment/entities/comment.entity";
+import { EventAttendace } from "src/event/entities/event-attendance.entity";
+import { EventCategory } from "src/event/entities/event-category.entity";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({ name : 'users'  })
@@ -17,9 +19,15 @@ export class User {
   @OneToMany(
     () => Comment,
     (comment) => comment.user,
-    {cascade : true, eager : true}
+    {cascade : true}
   )
   comments : Comment[];
+
+  @OneToMany(
+    () => EventAttendace,
+    (eventAttendance) => eventAttendance.user,
+  )
+  eventAttendance : EventAttendace[];
 
   @Column('datetime',{
     default : () => 'CURRENT_TIMESTAMP'

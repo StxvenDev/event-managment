@@ -17,9 +17,27 @@ export class EventController {
     return this.eventService.findOne(+id);
   }
 
+  @Get(':id/comment')
+  getComments(@Param('id') id: string) {
+    return this.eventService.getComments(+id);
+  }
+
+  @Get(':id/details')
+  getDetails(@Param('id') id: string) {
+    return this.eventService.getDetails(+id);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateEventDto: UpdateEventDto) {
     return this.eventService.update(+id, updateEventDto);
+  }
+
+  @Post(':userId/:eventId')
+  userAttendance(
+    @Param('userId') userId : string,
+    @Param('eventId') eventId : string
+  ){
+    return this.eventService.userAttendance(+userId, +eventId);
   }
 
 }

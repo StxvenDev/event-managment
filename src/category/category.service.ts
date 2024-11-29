@@ -25,6 +25,12 @@ export class CategoryService {
     return categories;
   }
 
+  async findOne(id : number) {
+    const category = await this.CategoryRepository.findOneBy({id});
+    if(!category) throw new NotFoundException(`Category with id ${id} not found`)
+    return category;
+  }
+  
   async update(id: number, updateCategoryDto: UpdateCategoryDto) {
     const categoryUpdated = await this.CategoryRepository.preload({id, ...updateCategoryDto});
     if(!categoryUpdated) throw new NotFoundException();

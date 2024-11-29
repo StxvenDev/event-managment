@@ -1,4 +1,4 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -21,7 +21,7 @@ export class UserService {
       await this.UserRepository.save(user);
       return {user};
     } catch (error) {
-      
+      throw new InternalServerErrorException()
     }
   }
 
@@ -30,6 +30,20 @@ export class UserService {
       if(!user)
         throw new NotFoundException(`User with id '${id}' not found`);
       return user;
+  }
+
+  async getAssist(id: number) {
+    const queryBuilder = this.UserRepository.createQueryBuilder('user');
+    const users = await queryBuilder.where('user.id =:userId',{
+      userId : id
+    })
+    .leftJoinAndSelect('user.eventAttendance', 'attendance')
+    .leftJoinAndSelect('attendance.event', 'event')
+    .getMany();
+    if (!users || users.length === 0) {
+      throw new NotFoundException(`User with id ${id} does not have attendance or does not exist`);
+    }
+    return users;
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {

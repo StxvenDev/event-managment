@@ -23,4 +23,8 @@ export class CreateEventDto {
     @IsDate()
     @IsOptional()
     create_at       : Date;
+
+    @IsNumber()
+    @IsOptional()
+    categoryId?     : number;
 }

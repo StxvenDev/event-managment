@@ -17,6 +17,11 @@ export class UserController {
     return this.userService.findOne(+id);
   }
 
+  @Get(':id/details')
+  getAssist(@Param('id') id: string) {
+    return this.userService.getAssist(+id);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(+id, updateUserDto);
