@@ -4,7 +4,7 @@
 
 # Event API
 
-1. Clonar los modulos del proyecto  ```yarn install```
+1. Clonar los modulos del proyecto  ```npm install```
 2.  ```.env``` y configurar las variables.
    ```
     DB_ROOT_PASSWORD
