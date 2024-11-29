@@ -19,12 +19,12 @@ export class EventController {
 
   @Get(':id/comment')
   getComments(@Param('id') id: string) {
-    return this.eventService.getComments(+id);
+    return this.eventService.eventComments(+id);
   }
 
   @Get(':id/details')
   getDetails(@Param('id') id: string) {
-    return this.eventService.getDetails(+id);
+    return this.eventService.eventDetails(+id);
   }
 
   @Patch(':id')
@@ -37,7 +37,7 @@ export class EventController {
     @Param('userId') userId : string,
     @Param('eventId') eventId : string
   ){
-    return this.eventService.userAttendance(+userId, +eventId);
+    return this.eventService.attendance(+userId, +eventId);
   }
 
 }

@@ -1,11 +1,11 @@
 services:
   db:
-    container_name: mysql_db
+    container_name: db_mysql
     image: mysql:9.1.0
     volumes:
-      - ./event-vol:/var/lib/mysql
+      - ./vol:/var/lib/mysql
     ports:
-      - "3307:3306"
+      - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_USER: ${DB_USER}
@@ -16,7 +16,7 @@ services:
   phpMyAdmin:
     depends_on:
       - db
-    container_name: phpMyAdmin
+    container_name: dbAdmin
     image: phpmyadmin:5.2.0-apache
     ports:
       - "8080:80"

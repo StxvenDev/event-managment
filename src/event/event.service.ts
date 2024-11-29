@@ -34,32 +34,32 @@ export class EventService {
   async create(createEventDto: CreateEventDto) {
     const queryRunner = this.dataSource.createQueryRunner();
     const { organizer_id, categoryId, ...eventData } = createEventDto;  
-    const userOrganizer = await this.userService.findOne(organizer_id);
+    const user = await this.userService.findOne(organizer_id);
     try {
-      if (!userOrganizer) throw new Error(`Organizer with ID ${organizer_id} not found.`);
+      if (!user) throw new Error(`Organizer with ID ${organizer_id} not found.`);
       const event = this.EventRepository.create({
         ...eventData,
-        organizer_id: userOrganizer,
+        organizer_id: user,
       });
       if (!categoryId) {
         await this.EventRepository.save(event);
         return {
           ...event,
-          organizer: userOrganizer.id,
+          organizer: user.id,
         };
       }  
       await queryRunner.connect();
       await queryRunner.startTransaction();
-      const category = await this.categoryService.findOne(categoryId);
-      if (!category) throw new Error(`Category with ID ${categoryId} not found.`);
+      const foundCategory = await this.categoryService.findOne(categoryId);
+      if (!foundCategory) throw new Error(`Category with ID ${categoryId} not found.`);
       await queryRunner.manager.save(event);
-      const eventCategory = this.EventCategoryRepository.create({ category, event });
+      const eventCategory = this.EventCategoryRepository.create({ category: foundCategory, event });
       await queryRunner.manager.save(eventCategory);
       await queryRunner.commitTransaction();
       return {
         ...event,
-        organizer: userOrganizer.id,
-        category: category.id,
+        organizer: user.id,
+        category: foundCategory.id,
       };
     } catch (error) {
       console.error("Error creating event:", error);
@@ -73,34 +73,34 @@ export class EventService {
 
   async findOne(id: number) {
     const queryBuilder = this.EventRepository.createQueryBuilder('event');
-    const event = await queryBuilder.where('event.id =:eventId',{
+    const foundEvent = await queryBuilder.where('event.id =:eventId',{
       eventId : id
     })
     .leftJoinAndSelect('event.organizer_id', 'userOrganizer')
     .getOne();
-    if(!event)
+    if(!foundEvent)
       throw new NotFoundException(`Event with id ${id} not found`)
-    return event;
+    return foundEvent;
   }
 
-  async getComments(id : number){
+  async eventComments(id : number){
     const queryBuilder = this.EventRepository.createQueryBuilder('event');
-    const events = await queryBuilder.where('event.id =:eventId',{
+    const foundEvents = await queryBuilder.where('event.id =:eventId',{
       eventId : id
     }).leftJoinAndSelect('event.comments', 'comments').getMany();
-    return events;
+    return foundEvents;
   }
 
-  async getDetails(id : number){
+  async eventDetails(id : number){
     const queryBuilder = this.EventRepository.createQueryBuilder('event');
-    const events = await queryBuilder.where('event.id =:eventId',{
+    const foundEvents = await queryBuilder.where('event.id =:eventId',{
       eventId : id
     }).leftJoinAndSelect('event.eventCategories', 'categories')
     .leftJoinAndSelect('categories.category', 'category')
     .leftJoinAndSelect('event.eventAttendance', 'attendance')
     .leftJoinAndSelect('attendance.user', 'user')
     .getOne();
-    return events;
+    return foundEvents;
   }
 
   async update(id: number, updateEventDto: UpdateEventDto) {
@@ -116,7 +116,7 @@ export class EventService {
       return eventUpdated;
   }
 
-  async userAttendance(idUser : number, idEvent : number){
+  async attendance(idUser : number, idEvent : number){
     const user : User = await this.userService.findOne(idUser);
     const event : Event = await this.findOne(idEvent);
     const userA = await this.EventAttendaceRepository.findOneBy({user , event});

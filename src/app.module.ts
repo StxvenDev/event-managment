@@ -8,6 +8,7 @@ import { CommonModule } from './common/common.module';
 import { EventModule } from './event/event.module';
 import { CommentModule } from './comment/comment.module';
 import { CategoryModule } from './category/category.module';
+import { LoqueseaModule } from './loquesea/loquesea.module';
 
 @Module({
   imports: [
@@ -26,7 +27,8 @@ import { CategoryModule } from './category/category.module';
     CommonModule,
     EventModule,
     CommentModule,
-    CategoryModule
+    CategoryModule,
+    LoqueseaModule
   ],
   controllers: [AppController],
   providers: [AppService],

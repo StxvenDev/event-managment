@@ -10,32 +10,32 @@ export class CategoryService {
 
   constructor(
     @InjectRepository(Category)
-    private readonly CategoryRepository : Repository<Category>
+    private readonly categoryRepository : Repository<Category>
   ){}
 
   async create(createCategoryDto: CreateCategoryDto) {
-    const category = this.CategoryRepository.create(createCategoryDto);
-    await this.CategoryRepository.save(category); 
+    const category = this.categoryRepository.create(createCategoryDto);
+    await this.categoryRepository.save(category); 
     return category;
   }
 
   async findAll() {
-    const categories = await this.CategoryRepository.find({});
-    if(!categories) throw new NotFoundException('Categories not register yet')
-    return categories;
+    const foundCategories = await this.categoryRepository.find({});
+    if(!foundCategories) throw new NotFoundException('Categories not register yet')
+    return foundCategories;
   }
 
   async findOne(id : number) {
-    const category = await this.CategoryRepository.findOneBy({id});
-    if(!category) throw new NotFoundException(`Category with id ${id} not found`)
-    return category;
+    const foundCategory = await this.categoryRepository.findOneBy({id});
+    if(!foundCategory) throw new NotFoundException(`Category with id ${id} not found`)
+    return foundCategory;
   }
   
   async update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    const categoryUpdated = await this.CategoryRepository.preload({id, ...updateCategoryDto});
-    if(!categoryUpdated) throw new NotFoundException();
-    await this.CategoryRepository.save(categoryUpdated);
-    return categoryUpdated;
+    const newCategory = await this.categoryRepository.preload({id, ...updateCategoryDto});
+    if(!newCategory) throw new NotFoundException();
+    await this.categoryRepository.save(newCategory);
+    return newCategory;
   }
 
 }
